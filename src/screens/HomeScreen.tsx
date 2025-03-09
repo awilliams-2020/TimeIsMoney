@@ -1,50 +1,55 @@
-import React, { useEffect, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, useWindowDimensions, View, ViewabilityConfig } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { Prompt } from '../components/Prompt';
-import { GeneratedImage } from '../components/GeneratedImage';
+import { useImages } from '../hooks/useImages';
+import { UserProvider } from '../context/UserContext';
 
-export type GeneratedImage = {
-    id: string
-    url: string
-}
-function useImages() {
-    return useQuery({
-        queryKey: ['images'],
-        queryFn: async (): Promise<Array<GeneratedImage>> => {
-            const response = await fetch('https://th3-sh0p.com/v1/images')
-            return await response.json()
-        }
-    })
-}
 export const HomeScreen = () => {
+    const [isLoading, setIsLoading] = useState(true)
     const { width } = useWindowDimensions()
-    const { data, isFetching, isSuccess } = useImages()
+    const { 
+        data,
+        fetchNextPage,
+        hasNextPage,
+        fetchPreviousPage,
+        hasPreviousPage,
+    } = useImages()
     const flatListRef = useRef<FlatList>()
 
     useEffect(() => {
-        if (isSuccess) {
-            flatListRef?.current?.scrollToIndex({index: 0})
-        }
-    })
+        setIsLoading(!isLoading)
+    }, [])
 
     return (
         <>
-            {isFetching ? (
+            {isLoading ? (
                 <View style={styles.loadingView}>
                     <ActivityIndicator style={styles.indicator} size='large' color={'black'} />
                     <Text>Loading...</Text>
                 </View>
             ) : (
                 <View style={{backgroundColor: '#212529'}}>
-                    <Prompt />
+                    <UserProvider>
+                        <Prompt flatListRef={flatListRef} />
+                    </UserProvider>
                     <FlatList
                         ref={flatListRef}
-                        data={data}
+                        data={data?.pages.flat()}
                         renderItem={({ item }) =>
                             <Image source={{ uri: item.url }} width={width} height={width} />
                         }
                         keyExtractor={item => item.id}
+                        initialNumToRender={2}
+                        onStartReached={()=> {
+                            if(hasPreviousPage) {
+                                fetchPreviousPage()
+                            }
+                        }}
+                        onEndReached={()=>{
+                            if(hasNextPage) {
+                                fetchNextPage()
+                            }
+                        }}
                     />
                 </View>
             )}

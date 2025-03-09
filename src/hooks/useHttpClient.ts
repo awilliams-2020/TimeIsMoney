@@ -1,8 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import Config from 'react-native-config';
 
 export const useHttpClient = () => {
     const client = axios.create({
-        baseURL: 'https://th3-sh0p.com/v1',
+        baseURL: Config.API_URL,
         headers: { 'Content-Type': 'application/json' }
     })
 

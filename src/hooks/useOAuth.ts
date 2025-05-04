@@ -8,8 +8,8 @@ import { UserContext } from "../context/UserContext";
 import Config from "react-native-config";
 
 export const useOAuth = () => {
-    const { setProfile } = useContext(UserContext)
-    const { getSession, setSession, setEnabled, enabled } = useStorage()
+    const { setProfile, userSession, setUserSession } = useContext(UserContext)
+    const { getSession, setSession } = useStorage()
     const [isAuthorizing, setIsAuthorizing] = useState(false)
     const request = useHttpClient()
 
@@ -23,7 +23,7 @@ export const useOAuth = () => {
             })
             return resp.data
         },
-        enabled
+        enabled: Boolean(userSession)
     })
 
     const GOOGLE_OAUTH_APP_GUID = Config.GOOGLE_OAUTH_APP_GUID;
@@ -45,7 +45,7 @@ export const useOAuth = () => {
         authorize(config)
             .then(resp => {
                 setSession(resp)
-                setEnabled(true)
+                setUserSession(resp)
             })
             .catch(err => console.log(`Error: ${err}`))
             .finally(() => setIsAuthorizing(false))

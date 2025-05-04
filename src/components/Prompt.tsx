@@ -14,7 +14,6 @@ import {
 import { useHttpClient } from '../hooks/useHttpClient';
 import { useOAuth } from '../hooks/useOAuth';
 import { useStorage } from '../hooks/useStorage';
-import { AuthorizeResult } from 'react-native-app-auth';
 import { Packages } from './Packages';
 import { UserContext } from '../context/UserContext';
 import { useMatomo } from 'matomo-tracker-react-native';
@@ -24,10 +23,9 @@ type PromptProps = {
 };
 export const Prompt = ({ flatListRef }: PromptProps) => {
     const { trackEvent } = useMatomo()
-    const [userSession, setUserSession] = useState<AuthorizeResult>()
     const [text, setText] = useState('');
     const [isOpen, setIsOpen] = useState(false)
-    const { profile, setImageCredit, imageCredit } = useContext(UserContext)
+    const { profile, setImageCredit, imageCredit, userSession } = useContext(UserContext)
     const { getSession } = useStorage()
     const { isLoading, signin } = useOAuth()
     const google = require('../assets/google.png')
@@ -55,15 +53,6 @@ export const Prompt = ({ flatListRef }: PromptProps) => {
             queryClient.invalidateQueries({ queryKey: ['credit'] })
         }
     })
-
-    useEffect(() => {
-        getSession()
-            .then(userSession => {
-                if (userSession) {
-                    setUserSession(userSession)
-                }
-            })
-    }, [])
 
     const createImage = () => {
         if (!imageCredit) {

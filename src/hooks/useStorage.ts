@@ -1,10 +1,10 @@
 import { isPast } from "date-fns";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import EncryptedStorage from "react-native-encrypted-storage";
+import { UserContext } from "../context/UserContext";
 
 export const useStorage = () => {
-    const [isLoading, setIsLoading] = useState(true)
-    const [enabled, setEnabled] = useState(false)
+const { setUserSession } = useContext(UserContext)
 
     const setSession = async (authState) => {
         try {
@@ -30,17 +30,13 @@ export const useStorage = () => {
         getSession()
             .then(userSession => {
                 if (userSession && !isPast(new Date(userSession.accessTokenExpirationDate))) {
-                    console.log("Check session")
-                    setEnabled(true)
+                    setUserSession(userSession)
                 }
             })
-            .finally(() => setIsLoading(false))
     }, [])
 
     return {
         setSession,
-        getSession,
-        setEnabled,
-        enabled
+        getSession
     }
 }

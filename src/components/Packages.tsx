@@ -1,10 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContext, useEffect, useState } from 'react';
-import React, { StyleSheet, Modal, View, Text, Image, Button, Pressable, ActivityIndicator, ToastAndroid } from 'react-native';
-import { useStorage } from '../hooks/useStorage';
+import React, { StyleSheet, Modal, View, Text, Image, Pressable, ActivityIndicator, ToastAndroid } from 'react-native';
 import { useHttpClient } from '../hooks/useHttpClient';
 import { initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
-import { isPast } from 'date-fns';
 import { UserContext } from '../context/UserContext';
 
 type PackagesProps = {
@@ -12,17 +10,14 @@ type PackagesProps = {
   setIsOpen: any,
 };
 export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
-  const { getSession } = useStorage()
   const request = useHttpClient()
-  const { setImageCredit } = useContext(UserContext)
+  const { setImageCredit, userSession } = useContext(UserContext)
   const [isSelected, setIsSelected] = useState(0)
   const [paymentIntent, setPaymentIntent] = useState('')
-  const [enabled, setEnabled] = useState(false)
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
     mutationFn: async (imagePack: any) => {
-      const userSession = await getSession()
       return request({
         method: 'post',
         url: '/image-pack',
@@ -42,7 +37,6 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
   const { isLoading, data } = useQuery({
     queryKey: ['credit'],
     queryFn: async () => {
-      const userSession = await getSession()
       const resp = await request({
         method: 'get',
         url: '/user-credit',
@@ -50,7 +44,7 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
       })
       return resp.data
     },
-    enabled
+    enabled: Boolean(userSession)
   })
 
   const createPaymentIntent = (pack) => {
@@ -85,21 +79,10 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
   }, [mutation.isPending])
 
   useEffect(() => {
-    if ((isOpen && !enabled) || !enabled) {
-      getSession()
-        .then(userSession => {
-          if (userSession && !isPast(new Date(userSession.accessTokenExpirationDate))) {
-            setEnabled(true)
-          }
-        })
-    }
-  }, [enabled])
-
-  useEffect(() => {
-    if (enabled && !isLoading && data) {
+    if (userSession && !isLoading && data) {
       setImageCredit(data.imageCredit)
     }
-  }, [isLoading, data])
+  }, [userSession, isLoading, data])
 
   return (
     <Modal
@@ -108,8 +91,8 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
       visible={isOpen} >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          {isLoading || !enabled || !data ? (
-            <ActivityIndicator size='large' color='black' />
+          {isLoading || !userSession || !data ? (
+            <ActivityIndicator size='large' style={styles.loader} color='black' />
           ) : (
             <Text style={styles.credit}>
               <Text style={{ fontWeight: 'bold' }}>{data.imageCredit ?? 0} </Text>images
@@ -206,5 +189,8 @@ const styles = StyleSheet.create({
   closeIcon: {
     width: 35,
     height: 35
+  },
+  loader: {
+    marginBottom: 12
   }
 });

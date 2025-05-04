@@ -19,7 +19,7 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
   const [paymentIntent, setPaymentIntent] = useState('')
   const [enabled, setEnabled] = useState(false)
   const queryClient = useQueryClient()
-  
+
   const mutation = useMutation({
     mutationFn: async (imagePack: any) => {
       const userSession = await getSession()
@@ -42,16 +42,16 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
   const { isLoading, data } = useQuery({
     queryKey: ['credit'],
     queryFn: async () => {
-        const userSession = await getSession()
-        const resp = await request({
-            method: 'get',
-            url: '/user-credit',
-            headers: {'Authorization': `Bearer ${userSession?.idToken}`}
-        })
-        return resp.data
+      const userSession = await getSession()
+      const resp = await request({
+        method: 'get',
+        url: '/user-credit',
+        headers: { 'Authorization': `Bearer ${userSession?.idToken}` }
+      })
+      return resp.data
     },
     enabled
-})
+  })
 
   const createPaymentIntent = (pack) => {
     mutation.mutate({ imagePack: `pack_${pack}` })
@@ -85,13 +85,15 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
   }, [mutation.isPending])
 
   useEffect(() => {
-    getSession()
+    if ((isOpen && !enabled) || !enabled) {
+      getSession()
         .then(userSession => {
-            if (userSession && !isPast(new Date(userSession.accessTokenExpirationDate))) {
-                setEnabled(true)
-            }
+          if (userSession && !isPast(new Date(userSession.accessTokenExpirationDate))) {
+            setEnabled(true)
+          }
         })
-  }, [])
+    }
+  }, [enabled])
 
   useEffect(() => {
     if (enabled && !isLoading && data) {
@@ -106,11 +108,11 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
       visible={isOpen} >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          {isLoading || !enabled ? (
+          {isLoading || !enabled || !data ? (
             <ActivityIndicator size='large' color='black' />
           ) : (
             <Text style={styles.credit}>
-              <Text style={{ fontWeight: 'bold' }}>{data.imageCredit} </Text>images
+              <Text style={{ fontWeight: 'bold' }}>{data.imageCredit ?? 0} </Text>images
             </Text>
           )}
           <View style={styles.hr}></View>

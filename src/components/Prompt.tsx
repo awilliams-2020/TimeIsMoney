@@ -17,11 +17,13 @@ import { useStorage } from '../hooks/useStorage';
 import { AuthorizeResult } from 'react-native-app-auth';
 import { Packages } from './Packages';
 import { UserContext } from '../context/UserContext';
+import { useMatomo } from 'matomo-tracker-react-native';
 
 type PromptProps = {
     flatListRef: MutableRefObject<FlatList<any>>
 };
 export const Prompt = ({ flatListRef }: PromptProps) => {
+    const { trackEvent } = useMatomo()
     const [userSession, setUserSession] = useState<AuthorizeResult>()
     const [text, setText] = useState('');
     const [isOpen, setIsOpen] = useState(false)
@@ -75,7 +77,10 @@ export const Prompt = ({ flatListRef }: PromptProps) => {
         <View style={styles.view}>
             {profile ? (
                 <>
-                    <Pressable onPress={() => setIsOpen(true)}
+                    <Pressable onPress={() => {
+                        trackEvent({ category: 'profile', action: 'click' })
+                        setIsOpen(true)
+                    }}
                         style={styles.container}>
                         <Image source={{ uri: profile.image }} style={[styles.icon, { borderRadius: 15 }]} />
                     </Pressable>

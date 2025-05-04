@@ -17,6 +17,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { useHttpClient } from './src/hooks/useHttpClient';
+import { instance } from './src/config/matomo';
+import { MatomoProvider } from 'matomo-tracker-react-native';
 
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
@@ -38,31 +40,33 @@ function App(): React.JSX.Element {
   }, []);
 
   return (
-    <StripeProvider
-      publishableKey={publishableKey}
-    >
-      <QueryClientProvider client={queryClient}>
-        <SafeAreaProvider>
-          <SafeAreaView style={{flex: 1, flexDirection: 'row'}}>
-            <StatusBar />
-            <NavigationContainer>
-              <Stack.Navigator
-                initialRouteName="Home"
-                screenOptions={{
-                  headerShown: false
-                }}
+    <MatomoProvider instance={instance}>
+      <StripeProvider
+        publishableKey={publishableKey}
+      >
+        <QueryClientProvider client={queryClient}>
+          <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1, flexDirection: 'row' }}>
+              <StatusBar />
+              <NavigationContainer>
+                <Stack.Navigator
+                  initialRouteName="Home"
+                  screenOptions={{
+                    headerShown: false
+                  }}
                 >
-                <Stack.Screen
-                  name="Home"
-                  component={HomeScreen}
-                  options={{ title: 'TIM' }}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </SafeAreaView>
-        </SafeAreaProvider>
-      </QueryClientProvider>
-    </StripeProvider>
+                  <Stack.Screen
+                    name="Home"
+                    component={HomeScreen}
+                    options={{ title: 'TIM' }}
+                  />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </SafeAreaView>
+          </SafeAreaProvider>
+        </QueryClientProvider>
+      </StripeProvider>
+    </MatomoProvider>
   );
 }
 

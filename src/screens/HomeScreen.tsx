@@ -7,7 +7,7 @@ import { UserProvider } from '../context/UserContext';
 export const HomeScreen = () => {
     const [isLoading, setIsLoading] = useState(true)
     const { width } = useWindowDimensions()
-    const { 
+    const {
         data,
         fetchNextPage,
         hasNextPage,
@@ -28,7 +28,7 @@ export const HomeScreen = () => {
                     <Text>Loading...</Text>
                 </View>
             ) : (
-                <View style={{backgroundColor: '#212529'}}>
+                <View style={{ backgroundColor: '#212529' }}>
                     <UserProvider>
                         <Prompt flatListRef={flatListRef} />
                     </UserProvider>
@@ -40,13 +40,13 @@ export const HomeScreen = () => {
                         }
                         keyExtractor={item => item.id}
                         initialNumToRender={2}
-                        onStartReached={()=> {
-                            if(hasPreviousPage) {
+                        onStartReached={() => {
+                            if (hasPreviousPage) {
                                 fetchPreviousPage()
                             }
                         }}
-                        onEndReached={()=>{
-                            if(hasNextPage) {
+                        onEndReached={() => {
+                            if (hasNextPage) {
                                 fetchNextPage()
                             }
                         }}

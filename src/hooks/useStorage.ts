@@ -1,6 +1,11 @@
+import { isPast } from "date-fns";
+import { useEffect, useState } from "react";
 import EncryptedStorage from "react-native-encrypted-storage";
 
 export const useStorage = () => {
+    const [isLoading, setIsLoading] = useState(true)
+    const [enabled, setEnabled] = useState(false)
+
     const setSession = async (authState) => {
         try {
             await EncryptedStorage.setItem(
@@ -10,18 +15,32 @@ export const useStorage = () => {
         } catch (error) {
         }
     }
-    
+
     const getSession = async () => {
-        try {   
+        try {
             const session = await EncryptedStorage.getItem("user_session");
             if (session) {
                 return JSON.parse(session)
             }
             return undefined
-        } catch (error) {}
+        } catch (error) { }
     }
+
+    useEffect(() => {
+        getSession()
+            .then(userSession => {
+                if (userSession && !isPast(new Date(userSession.accessTokenExpirationDate))) {
+                    console.log("Check session")
+                    setEnabled(true)
+                }
+            })
+            .finally(() => setIsLoading(false))
+    }, [])
+
     return {
         setSession,
-        getSession
+        getSession,
+        setEnabled,
+        enabled
     }
 }

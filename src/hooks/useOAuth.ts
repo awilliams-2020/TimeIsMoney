@@ -5,11 +5,11 @@ import { useHttpClient } from "./useHttpClient";
 import { useStorage } from "./useStorage";
 import { isPast } from "date-fns";
 import { UserContext } from "../context/UserContext";
+import Config from "react-native-config";
 
 export const useOAuth = () => {
     const { setProfile } = useContext(UserContext)
-    const { getSession, setSession } = useStorage()
-    const [enabled, setEnabled] = useState(false)
+    const { getSession, setSession, setEnabled, enabled } = useStorage()
     const [isAuthorizing, setIsAuthorizing] = useState(false)
     const request = useHttpClient()
 
@@ -26,13 +26,7 @@ export const useOAuth = () => {
         enabled
     })
 
-    useEffect(() => {
-        if (!isLoading && data) {
-            setProfile(data.profile)
-        }
-    }, [data])
-
-    const GOOGLE_OAUTH_APP_GUID = '889504103274-5fu49653t4beaotjhnn4ql0fj8i5vpd3';
+    const GOOGLE_OAUTH_APP_GUID = Config.GOOGLE_OAUTH_APP_GUID;
     const config:AuthConfiguration = {
       issuer: 'https://accounts.google.com',
       clientId: `${GOOGLE_OAUTH_APP_GUID}.apps.googleusercontent.com`,
@@ -41,13 +35,10 @@ export const useOAuth = () => {
     };
 
     useEffect(() => {
-        getSession()
-            .then(userSession => {
-                if (userSession && !isPast(new Date(userSession.accessTokenExpirationDate))) {
-                    setEnabled(true)
-                }
-            })
-    }, [])
+        if (!isLoading && data) {
+            setProfile(data.profile)
+        }
+    }, [data])
 
     const signin = async () => {
         setIsAuthorizing(true)

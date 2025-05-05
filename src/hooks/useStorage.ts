@@ -4,7 +4,7 @@ import EncryptedStorage from "react-native-encrypted-storage";
 import { UserContext } from "../context/UserContext";
 
 export const useStorage = () => {
-const { setUserSession } = useContext(UserContext)
+    const { setUserSession, userSession } = useContext(UserContext)
 
     const setSession = async (authState) => {
         try {
@@ -27,12 +27,14 @@ const { setUserSession } = useContext(UserContext)
     }
 
     useEffect(() => {
-        getSession()
-            .then(userSession => {
-                if (userSession && !isPast(new Date(userSession.accessTokenExpirationDate))) {
-                    setUserSession(userSession)
-                }
-            })
+        if (!userSession) {
+            getSession()
+                .then(userSession => {
+                    if (userSession && !isPast(new Date(userSession.accessTokenExpirationDate))) {
+                        setUserSession(userSession)
+                    }
+                })
+        }
     }, [])
 
     return {

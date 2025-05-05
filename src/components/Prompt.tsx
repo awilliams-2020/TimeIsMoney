@@ -16,13 +16,11 @@ import { useOAuth } from '../hooks/useOAuth';
 import { useStorage } from '../hooks/useStorage';
 import { Packages } from './Packages';
 import { UserContext } from '../context/UserContext';
-import { useMatomo } from 'matomo-tracker-react-native';
 
 type PromptProps = {
     flatListRef: MutableRefObject<FlatList<any>>
 };
 export const Prompt = ({ flatListRef }: PromptProps) => {
-    const { trackEvent } = useMatomo()
     const [text, setText] = useState('');
     const [isOpen, setIsOpen] = useState(false)
     const { profile, setImageCredit, imageCredit, userSession } = useContext(UserContext)
@@ -67,7 +65,6 @@ export const Prompt = ({ flatListRef }: PromptProps) => {
             {profile ? (
                 <>
                     <Pressable onPress={() => {
-                        trackEvent({ category: 'profile', action: 'click' })
                         setIsOpen(true)
                     }}
                         style={styles.container}>

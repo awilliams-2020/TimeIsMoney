@@ -76,17 +76,17 @@ android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
-
     namespace "com.timeismoney"
     defaultConfig {
         applicationId "com.timeismoney"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "4"
         manifestPlaceholders = [
             appAuthRedirectScheme: 'com.googleusercontent.apps.889504103274-5fu49653t4beaotjhnn4ql0fj8i5vpd3'
         ]
+        resValue "string", "build_config_package", "com.timeismoney"
     }
     signingConfigs {
         debug {
@@ -112,6 +112,7 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             // signingConfig signingConfigs.debug
+            applicationIdSuffix ".alw"
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"

@@ -4,13 +4,15 @@ import React, { StyleSheet, Modal, View, Text, Image, Pressable, ActivityIndicat
 import { useHttpClient } from '../hooks/useHttpClient';
 import { initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
 import { UserContext } from '../context/UserContext';
+import Config from 'react-native-config';
+import { useTh3sh0p } from '../hooks/useTh3Sh0p';
 
 type PackagesProps = {
   isOpen: boolean,
   setIsOpen: any,
 };
 export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
-  const request = useHttpClient()
+  const th3sh0p = useTh3sh0p()
   const { setImageCredit, userSession } = useContext(UserContext)
   const [isSelected, setIsSelected] = useState(0)
   const [paymentIntent, setPaymentIntent] = useState('')
@@ -18,7 +20,7 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
 
   const mutation = useMutation({
     mutationFn: async (imagePack: any) => {
-      return request({
+      return th3sh0p({
         method: 'post',
         url: '/image-pack',
         data: imagePack,
@@ -37,7 +39,7 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
   const { isLoading, data } = useQuery({
     queryKey: ['credit'],
     queryFn: async () => {
-      const resp = await request({
+      const resp = await th3sh0p({
         method: 'get',
         url: '/user-credit',
         headers: { 'Authorization': `Bearer ${userSession?.idToken}` }

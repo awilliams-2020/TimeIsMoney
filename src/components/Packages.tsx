@@ -1,11 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContext, useEffect, useState } from 'react';
 import React, { StyleSheet, Modal, View, Text, Image, Pressable, ActivityIndicator, ToastAndroid } from 'react-native';
-import { useHttpClient } from '../hooks/useHttpClient';
 import { initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
 import { UserContext } from '../context/UserContext';
-import Config from 'react-native-config';
 import { useTh3sh0p } from '../hooks/useTh3Sh0p';
+import { useMatomo } from '../hooks/useMatomo';
 
 type PackagesProps = {
   isOpen: boolean,
@@ -17,6 +16,7 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
   const [isSelected, setIsSelected] = useState(0)
   const [paymentIntent, setPaymentIntent] = useState('')
   const queryClient = useQueryClient()
+  const { trackEvent } = useMatomo()
 
   const mutation = useMutation({
     mutationFn: async (imagePack: any) => {
@@ -101,7 +101,10 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
             </Text>
           )}
           <View style={styles.hr}></View>
-          <Pressable style={styles.imagePack} onPress={() => createPaymentIntent(1)}>
+          <Pressable style={styles.imagePack} onPress={() => {
+              createPaymentIntent(1)
+              trackEvent('package', 'click', 'purchase', 1)
+            }}>
             {isSelected === 1 ? (
               <ActivityIndicator size='large' color='white' style={styles.coin} />
             ) : (
@@ -109,7 +112,10 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
             )}
             <Text style={styles.cost}>$1.00 / 20 images</Text>
           </Pressable>
-          <Pressable style={styles.imagePack} onPress={() => createPaymentIntent(2)}>
+          <Pressable style={styles.imagePack} onPress={() => {
+              createPaymentIntent(2)
+              trackEvent('package', 'click', 'purchase', 2)
+            }}>
             {isSelected === 2 ? (
               <ActivityIndicator size='large' color='white' style={styles.coin} />
             ) : (
@@ -117,7 +123,10 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
             )}
             <Text style={styles.cost}>$3.00 / 60 images</Text>
           </Pressable>
-          <Pressable style={styles.imagePack} onPress={() => createPaymentIntent(3)}>
+          <Pressable style={styles.imagePack} onPress={() => {
+              createPaymentIntent(3)
+              trackEvent('package', 'click', 'purchase', 3)
+            }}>
             {isSelected === 3 ? (
               <ActivityIndicator size='large' color='white' style={styles.coin} />
             ) : (
@@ -127,7 +136,10 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
           </Pressable>
           <Pressable
             style={[styles.closeButton]}
-            onPress={() => setIsOpen(false)}>
+            onPress={() => {
+              trackEvent("package", "click", "close")
+              setIsOpen(false)
+            }}>
             <Image source={require('../assets/close-bold.png')} style={styles.closeIcon} resizeMode='contain' />
           </Pressable>
         </View>

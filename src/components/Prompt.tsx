@@ -11,12 +11,10 @@ import {
     ToastAndroid,
     View
 } from 'react-native';
-import { useHttpClient } from '../hooks/useHttpClient';
 import { useOAuth } from '../hooks/useOAuth';
 import { useStorage } from '../hooks/useStorage';
 import { Packages } from './Packages';
 import { UserContext } from '../context/UserContext';
-import Config from 'react-native-config';
 import { useMatomo } from '../hooks/useMatomo';
 import { useTh3sh0p } from '../hooks/useTh3Sh0p';
 
@@ -26,7 +24,7 @@ type PromptProps = {
 export const Prompt = ({ flatListRef }: PromptProps) => {
     const [text, setText] = useState('');
     const [isOpen, setIsOpen] = useState(false)
-    const { profile, setImageCredit, imageCredit, userSession } = useContext(UserContext)
+    const { profile, imageCredit, userSession } = useContext(UserContext)
     const { getSession } = useStorage()
     const { isLoading, signin } = useOAuth()
     const th3sh0p = useTh3sh0p()
@@ -57,6 +55,7 @@ export const Prompt = ({ flatListRef }: PromptProps) => {
     })
 
     const createImage = () => {
+        trackEvent('image', 'click', 'create', imageCredit)
         if (!imageCredit) {
             setIsOpen(true)
         } else {

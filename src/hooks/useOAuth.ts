@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { AuthConfiguration, authorize } from "react-native-app-auth";
-import { useHttpClient } from "./useHttpClient";
 import { useStorage } from "./useStorage";
 import { UserContext } from "../context/UserContext";
 import Config from "react-native-config";

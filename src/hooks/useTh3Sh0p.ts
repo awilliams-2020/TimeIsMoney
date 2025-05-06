@@ -1,4 +1,3 @@
-import axios, { AxiosRequestConfig } from 'axios';
 import Config from 'react-native-config';
 import { useHttpClient } from './useHttpClient';
 

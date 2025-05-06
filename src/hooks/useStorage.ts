@@ -1,5 +1,5 @@
 import { isPast } from "date-fns";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import EncryptedStorage from "react-native-encrypted-storage";
 import { UserContext } from "../context/UserContext";
 

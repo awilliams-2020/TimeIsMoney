@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import Config from 'react-native-config';
 
 export const useHttpClient = (url: string | undefined) => {
     const client = axios.create({

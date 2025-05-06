@@ -16,6 +16,9 @@ import { useOAuth } from '../hooks/useOAuth';
 import { useStorage } from '../hooks/useStorage';
 import { Packages } from './Packages';
 import { UserContext } from '../context/UserContext';
+import Config from 'react-native-config';
+import { useMatomo } from '../hooks/useMatomo';
+import { useTh3sh0p } from '../hooks/useTh3Sh0p';
 
 type PromptProps = {
     flatListRef: MutableRefObject<FlatList<any>>
@@ -26,14 +29,15 @@ export const Prompt = ({ flatListRef }: PromptProps) => {
     const { profile, setImageCredit, imageCredit, userSession } = useContext(UserContext)
     const { getSession } = useStorage()
     const { isLoading, signin } = useOAuth()
-    const google = require('../assets/google.png')
-    const request = useHttpClient()
+    const th3sh0p = useTh3sh0p()
     const queryClient = useQueryClient()
+    const { trackEvent } = useMatomo();
+    const google = require('../assets/google.png')
 
     const mutation = useMutation({
         mutationFn: async (prompt: any) => {
             const userSession = await getSession()
-            return request({
+            return th3sh0p({
                 method: 'post',
                 url: '/image',
                 data: prompt,
@@ -65,6 +69,7 @@ export const Prompt = ({ flatListRef }: PromptProps) => {
             {profile ? (
                 <>
                     <Pressable onPress={() => {
+                        trackEvent('profile', 'click', 'open')
                         setIsOpen(true)
                     }}
                         style={styles.container}>
@@ -92,7 +97,10 @@ export const Prompt = ({ flatListRef }: PromptProps) => {
                         </View>
                     ) : (
                         <Pressable
-                            onPress={() => signin()}
+                            onPress={() => {
+                                trackEvent('profile', 'click', 'signin')
+                                signin()
+                            }}
                             style={styles.container}>
                             <Image source={google} style={styles.icon} />
                             <Text style={styles.signup}>Sign in</Text>

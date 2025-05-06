@@ -11,8 +11,8 @@ export const useMatomo = () => {
         rec: '1'
     }
 
-    const trackEvent = async (category: string, action: string, name: string) => {
-        await matomo({
+    const trackEvent = (category: string, action: string, name: string) => {
+        matomo({
             method: 'get',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             params: {
@@ -21,7 +21,7 @@ export const useMatomo = () => {
                 'e_a': action,
                 'e_n': name,
                 'cip': ipAddress,
-                'token_auth': '',
+                'token_auth': Config.MATOMO_TOKEN,
                 'ua': userAgent
             }
         })

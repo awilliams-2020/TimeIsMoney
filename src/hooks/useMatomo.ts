@@ -11,7 +11,7 @@ export const useMatomo = () => {
         rec: '1'
     }
 
-    const trackEvent = (category: string, action: string, name: string) => {
+    const trackEvent = (category: string, action: string, name: string, value: number = 0) => {
         matomo({
             method: 'get',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -20,6 +20,7 @@ export const useMatomo = () => {
                 'e_c': category,
                 'e_a': action,
                 'e_n': name,
+                'e_v': value,
                 'cip': ipAddress,
                 'token_auth': Config.MATOMO_TOKEN,
                 'ua': userAgent

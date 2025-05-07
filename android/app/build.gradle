@@ -81,8 +81,8 @@ android {
         applicationId "com.timeismoney"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "4"
+        versionCode 5
+        versionName "5"
         manifestPlaceholders = [
             appAuthRedirectScheme: 'com.googleusercontent.apps.889504103274-5fu49653t4beaotjhnn4ql0fj8i5vpd3'
         ]

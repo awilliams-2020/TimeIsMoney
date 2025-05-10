@@ -2,11 +2,12 @@ import { isPast } from "date-fns";
 import { useContext, useEffect } from "react";
 import EncryptedStorage from "react-native-encrypted-storage";
 import { UserContext } from "../context/UserContext";
+import { AuthorizeResult } from "react-native-app-auth";
 
 export const useStorage = () => {
     const { setUserSession, userSession } = useContext(UserContext)
 
-    const setSession = async (authState) => {
+    const setSession = async (authState: AuthorizeResult) => {
         try {
             await EncryptedStorage.setItem(
                 "user_session",

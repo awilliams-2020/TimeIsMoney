@@ -1,4 +1,4 @@
-import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { useHttpClient } from "./useHttpClient"
 import Config from "react-native-config"
 import { useTh3sh0p } from "./useTh3Sh0p"
@@ -6,7 +6,7 @@ import { useTh3sh0p } from "./useTh3Sh0p"
 export const useImages = () => {
     const th3sh0p = useTh3sh0p()
 
-    const getImages = async ({ pageParam }) => {
+    const getImages = async ({ pageParam }: { pageParam: number }) => {
         const response = await th3sh0p({
             method: 'get',
             url: `/images?page=${pageParam}`
@@ -17,13 +17,13 @@ export const useImages = () => {
         queryKey: ['images'],
         queryFn: getImages,
         initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages, lastPageParam) => {
+        getNextPageParam: (lastPage, _, lastPageParam) => {
             if (lastPage.length === 0) {
                 return undefined
             }
             return lastPageParam + 1
         },
-        getPreviousPageParam: (firstPage, allPages, firstPageParam) => {
+        getPreviousPageParam: (_, __, firstPageParam) => {
             if (firstPageParam <= 1) {
                 return undefined
             }
@@ -35,7 +35,7 @@ export const useImages = () => {
 }
 
 export const useImagesPages = () => {
-    const th3sh0p = useHttpClient(Config.API_URL, 'application/json')
+    const th3sh0p = useHttpClient(Config.API_URL)
     const { data, isFetching } = useQuery({
         queryKey: ['imagePages'],
         queryFn: async () => {

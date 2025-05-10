@@ -3,6 +3,12 @@ import { ActivityIndicator, FlatList, Image, StyleSheet, Text, useWindowDimensio
 import { Prompt } from '../components/Prompt';
 import { useImages } from '../hooks/useImages';
 import { UserProvider } from '../context/UserContext';
+import { FloatingActionButton } from '../components/FloatingActionButton';
+
+type ImageItem = {
+    id: string;
+    url: string;
+};
 
 export const HomeScreen = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -14,7 +20,7 @@ export const HomeScreen = () => {
         fetchPreviousPage,
         hasPreviousPage,
     } = useImages()
-    const flatListRef = useRef<FlatList>()
+    const flatListRef = useRef<FlatList<ImageItem>>(null)
 
     useEffect(() => {
         setIsLoading(!isLoading)
@@ -28,7 +34,7 @@ export const HomeScreen = () => {
                     <Text>Loading...</Text>
                 </View>
             ) : (
-                <View style={{ backgroundColor: '#212529' }}>
+                <View style={{ backgroundColor: '#212529', flex: 1 }}>
                     <UserProvider>
                         <Prompt flatListRef={flatListRef} />
                     </UserProvider>
@@ -51,6 +57,7 @@ export const HomeScreen = () => {
                             }
                         }}
                     />
+                    <FloatingActionButton />
                 </View>
             )}
         </>

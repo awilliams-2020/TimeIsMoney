@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import React, { MutableRefObject, useContext, useEffect, useState } from 'react';
+import React, { MutableRefObject, useContext, useEffect, useState, RefObject } from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -19,7 +19,7 @@ import { useMatomo } from '../hooks/useMatomo';
 import { useTh3sh0p } from '../hooks/useTh3Sh0p';
 
 type PromptProps = {
-    flatListRef: MutableRefObject<FlatList<any>>
+    flatListRef: RefObject<FlatList<any>>
 };
 export const Prompt = ({ flatListRef }: PromptProps) => {
     const [text, setText] = useState('');
@@ -46,10 +46,10 @@ export const Prompt = ({ flatListRef }: PromptProps) => {
             console.log({ error })
             ToastAndroid.show('Image not created', ToastAndroid.SHORT,);
         },
-        onSuccess({ data }) {
+        onSuccess() {
             setText('')
             queryClient.invalidateQueries({ queryKey: ['images'] })
-            flatListRef.current.scrollToIndex({ index: 0 })
+            flatListRef.current?.scrollToIndex({ index: 0 })
             queryClient.invalidateQueries({ queryKey: ['credit'] })
         }
     })

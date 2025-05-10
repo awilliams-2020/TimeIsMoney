@@ -49,7 +49,7 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
     enabled: Boolean(userSession)
   })
 
-  const createPaymentIntent = (pack) => {
+  const createPaymentIntent = (pack: number) => {
     mutation.mutate({ imagePack: `pack_${pack}` })
     setIsSelected(pack)
   }
@@ -90,7 +90,8 @@ export const Packages = ({ isOpen, setIsOpen }: PackagesProps) => {
     <Modal
       animationType="slide"
       transparent={true}
-      visible={isOpen} >
+      visible={isOpen}
+      onRequestClose={()=>setIsOpen(false)}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           {isLoading || !userSession || !data ? (

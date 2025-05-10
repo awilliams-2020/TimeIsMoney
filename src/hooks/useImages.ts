@@ -36,7 +36,7 @@ export const useImages = () => {
 
 export const useImagesPages = () => {
     const th3sh0p = useHttpClient(Config.API_URL, 'application/json')
-    const { data, isFetching, isSuccess } = useQuery({
+    const { data, isFetching } = useQuery({
         queryKey: ['imagePages'],
         queryFn: async () => {
             const response = await th3sh0p({

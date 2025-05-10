@@ -12,10 +12,12 @@ export const useMatomo = () => {
     }
 
     const trackEvent = (category: string, action: string, name: string, value: number = 0) => {
+        if (Config.API_URL && Config.API_URL.includes('dev'))
+            return
         matomo({
-            method: 'get',
+            method: 'post',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            params: {
+            data: {
                 ...staticParams,
                 'e_c': category,
                 'e_a': action,
@@ -26,8 +28,8 @@ export const useMatomo = () => {
                 'ua': userAgent
             }
         })
-        // .then(value => console.log(value))
-        // .catch(err => console.log(err))
+        .then(value => console.log(value))
+        .catch(err => console.log(err))
     }
 
     return {

@@ -1,4 +1,4 @@
-import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { useHttpClient } from "./useHttpClient"
 import Config from "react-native-config"
 import { useTh3sh0p } from "./useTh3Sh0p"
@@ -6,7 +6,7 @@ import { useTh3sh0p } from "./useTh3Sh0p"
 export const useImages = () => {
     const th3sh0p = useTh3sh0p()
 
-    const getImages = async ({ pageParam }) => {
+    const getImages = async ({ pageParam }: { pageParam: number }) => {
         const response = await th3sh0p({
             method: 'get',
             url: `/images?page=${pageParam}`

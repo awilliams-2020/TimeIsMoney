@@ -9,6 +9,7 @@ export const HomeScreen = () => {
     const { width } = useWindowDimensions()
     const {
         data,
+        isFetching,
         fetchNextPage,
         hasNextPage,
         fetchPreviousPage,
@@ -17,7 +18,9 @@ export const HomeScreen = () => {
     const flatListRef = useRef<FlatList>()
 
     useEffect(() => {
-        setIsLoading(!isLoading)
+        if (isLoading && isFetching) {
+            setIsLoading(!isLoading)
+        }
     }, [])
 
     return (
